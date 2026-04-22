@@ -1,4 +1,5 @@
-import re, os
+import os
+import re
 import json
 import math
 import random
@@ -210,28 +211,24 @@ class FFNStrict(nn.Module):
         super().__init__()
         self.encoder = TokenEmbedding(vocab_size, embed_dim)
         self.out = nn.Linear(embed_dim, num_classes)
-        #self.out = nn.Linear(embed_dim+4, num_classes)
 
     def forward(self, input_ids, delta_t, mask):
         token_emb = self.encoder(input_ids)
         x = masked_mean(token_emb, mask)
         t = time_descriptors(delta_t, mask)
         return self.out(x), {}
-        #return self.out(torch.cat([x, t], dim=1)), {}
 
 
 class ConcatFFNStrict(nn.Module):
     def __init__(self, vocab_size, embed_dim=128, num_classes=4):
         super().__init__()
         self.encoder = TokenEmbedding(vocab_size, embed_dim)
-        #self.out = nn.Linear(embed_dim, num_classes)
         self.out = nn.Linear(embed_dim+4, num_classes)
 
     def forward(self, input_ids, delta_t, mask):
         token_emb = self.encoder(input_ids)
         x = masked_mean(token_emb, mask)
         t = time_descriptors(delta_t, mask)
-        #return self.out(x), {}
         return self.out(torch.cat([x, t], dim=1)), {}
 
 
@@ -249,19 +246,14 @@ class WFBFFNStrictFixed(nn.Module):
         self.theta_t = nn.Parameter(torch.zeros(embed_dim))
         self.out = nn.Linear(embed_dim, num_classes)
 
-    def positive_params(self):
-        # WFB does not need softplus
-        #Ax = F.softplus(self.Ax_raw) + 1e-4
-        #At = F.softplus(self.At_raw) + 1e-4
-        #k = F.softplus(self.k_raw) + 1e-4
-        #omega = F.softplus(self.omega_raw) + 1e-4
+    def value_params(self):
         return self.Ax_raw, self.At_raw, self.k_raw, self.omega_raw
 
     def wave_state(self, input_ids, delta_t, mask):
         x_raw = self.encoder(input_ids)
         x = torch.tanh(self.norm(x_raw))
         t = delta_t.unsqueeze(-1)
-        Ax_vec, At_vec, k_vec, omega_vec = self.positive_params()
+        Ax_vec, At_vec, k_vec, omega_vec = self.value_params()
         Ax = Ax_vec.view(1, 1, -1)
         At = At_vec.view(1, 1, -1)
         k = k_vec.view(1, 1, -1)
@@ -355,8 +347,6 @@ def override_temporal_grads(model, aux, mask, temporal_mode="laplacian", lambda_
     omega_grad = _reduce_grad(grad_omega, valid)
     theta_t_grad = _reduce_grad(grad_theta_t, valid)
 
-    #model.At_raw.grad = at_grad * torch.sigmoid(model.At_raw.detach())
-    #model.omega_raw.grad = omega_grad * torch.sigmoid(model.omega_raw.detach())
     model.At_raw.grad = at_grad
     model.omega_raw.grad = omega_grad
 
