@@ -2,6 +2,7 @@ Deep learning models have achieved strong performance through compositions of li
 
 > python .\WFB_GoEmostions.py --output_dir outputs
 
-<img width="584" height="459" alt="laplacian" src="https://github.com/user-attachments/assets/94f7b2cc-9560-4274-8462-c0b303973e9d" />
-# Model Comparison at λ = 10⁻⁴
+<img width="584" height="459" alt="laplacian" src="https://github.com/user-attachments/assets/b6303b1b-6f15-4683-a9fe-8c9a18b8315e" />
+
+## Model Comparison at λ = 10⁻⁴
 <img width="2000" height="1200" alt="grouped_metrics" src="https://github.com/user-attachments/assets/e7499b00-0e15-4f64-b024-ae90aa0dd70f" />
