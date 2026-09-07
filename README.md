@@ -62,4 +62,4 @@ python scripts/summarize_lambda_sweep.py \
 <!--
 <img width="584" height="459" alt="laplacian" src="https://github.com/user-attachments/assets/b6303b1b-6f15-4683-a9fe-8c9a18b8315e" />
 -->
-Full Paper: https://arxiv.org/abs/2609.00503 
+Full Paper: https://arxiv.org/abs/2609.00503 The 38th IEEE International Conference on Tools with Artificial Intelligence, Nov. 2026 
